@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"log"
 	"os"
+
+	"github.com/mrap/stringutil"
 )
 
 type Node struct {
@@ -31,7 +33,7 @@ func (n *Node) addWord(word string, curr int) {
 }
 
 func (n *Node) AddWord(word string) {
-	substrs := Substrs(word, 2)
+	substrs := stringutil.Substrs(word, 2)
 	var (
 		_curr string
 		_char rune
