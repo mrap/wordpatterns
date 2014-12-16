@@ -6,7 +6,7 @@ import (
 )
 
 var _ = Describe("Wordpatterns", func() {
-	const testFilename = "test_words.txt"
+	const testFilename = "test/test_words.txt"
 	var (
 		_trie *Node
 	)
