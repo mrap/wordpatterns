@@ -23,12 +23,12 @@ func (n *Node) Child(c rune) *Node {
 	return _child
 }
 
-func (n *Node) addWord(word string, curr int) {
-	n.Words[word] = struct{}{}
+func (n *Node) addWord(orig string, substr string, curr int) {
+	n.Words[orig] = struct{}{}
 
 	curr++
-	if curr < len(word) {
-		n.Child(rune(word[curr])).addWord(word, curr)
+	if curr < len(substr) {
+		n.Child(rune(substr[curr])).addWord(orig, substr, curr)
 	}
 }
 
@@ -42,7 +42,7 @@ func (n *Node) AddWord(word string) {
 		_curr = substrs[i]
 		_char = rune(_curr[0])
 
-		n.Child(_char).addWord(word, 0)
+		n.Child(_char).addWord(word, _curr, 0)
 	}
 }
 
