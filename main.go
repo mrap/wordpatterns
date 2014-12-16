@@ -11,5 +11,14 @@ func main() {
 	}
 
 	filename := os.Args[1]
-	fmt.Printf("%+v", CreateTrie(filename).Children)
+	fmt.Println("Diegesting words from", filename)
+	t := CreateTrie(filename)
+
+	var query string
+	for true {
+		fmt.Print("\nEnter a string to search for: ")
+		fmt.Scanf("%s", &query)
+		fmt.Printf("===== Words Containing '%s' =====\n\n", query)
+		fmt.Println(t.WordsContaining(query))
+	}
 }
