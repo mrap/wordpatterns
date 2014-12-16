@@ -60,4 +60,15 @@ var _ = Describe("Wordpatterns", func() {
 			Ω(the.Words).ShouldNot(HaveKey("that"))
 		})
 	})
+
+	Describe("Query for words that contain a substring", func() {
+		It("should return correct words", func() {
+			Ω(_trie.WordsContaining("at")).Should(ConsistOf("that"))
+			Ω(_trie.WordsContaining("ha")).Should(ConsistOf("that"))
+			Ω(_trie.WordsContaining("hat")).Should(ConsistOf("that"))
+			Ω(_trie.WordsContaining("t")).Should(ConsistOf("the", "that"))
+			Ω(_trie.WordsContaining("th")).Should(ConsistOf("the", "that"))
+			Ω(_trie.WordsContaining("tha")).Should(ConsistOf("that"))
+		})
+	})
 })

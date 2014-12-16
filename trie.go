@@ -32,6 +32,20 @@ func (n *Node) addWord(orig string, substr string, curr int) {
 	}
 }
 
+func (n *Node) ChildAt(path string) *Node {
+	var (
+		_char rune
+		_len  = len(path)
+		_node = n
+	)
+
+	for i := 0; i < _len; i++ {
+		_char = rune(path[i])
+		_node = _node.Child(_char)
+	}
+	return _node
+}
+
 func (n *Node) AddWord(word string) {
 	substrs := stringutil.Substrs(word, 2)
 	var (
@@ -44,6 +58,17 @@ func (n *Node) AddWord(word string) {
 
 		n.Child(_char).addWord(word, _curr, 0)
 	}
+}
+
+func (n *Node) WordsContaining(substr string) []string {
+	m := n.ChildAt(substr).Words
+	words := make([]string, len(m))
+	i := 0
+	for w := range m {
+		words[i] = w
+		i++
+	}
+	return words
 }
 
 func CreateTrie(filename string) *Node {
