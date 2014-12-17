@@ -10,7 +10,16 @@ import (
 
 type Node struct {
 	Children map[rune]*Node
+	Str      string
 	Words    map[string]struct{}
+}
+
+func (n *Node) Count() int {
+	var count int = 1
+	for _, c := range n.Children {
+		count += c.Count()
+	}
+	return count
 }
 
 func (n *Node) Child(c rune) *Node {
@@ -25,6 +34,7 @@ func (n *Node) Child(c rune) *Node {
 
 func (n *Node) addWord(orig string, substr string, curr int) {
 	n.Words[orig] = struct{}{}
+	n.Str = substr[:curr+1]
 
 	curr++
 	if curr < len(substr) {
@@ -84,7 +94,6 @@ func CreateTrie(filename string) *Node {
 	var word string
 	for scanner.Scan() {
 		word = scanner.Text()
-		// go top.AddWord(word)
 		top.AddWord(word)
 	}
 	if err = scanner.Err(); err != nil {
