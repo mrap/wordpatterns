@@ -11,14 +11,19 @@ func main() {
 	}
 
 	filename := os.Args[1]
-	fmt.Println("Diegesting words from", filename)
-	t := CreateTrie(filename)
+	fmt.Println("Digesting words from", filename)
+	t := CreateWordmap(filename)
 
-	var query string
+	var (
+		query   string
+		results []string
+	)
+
 	for true {
 		fmt.Print("\nEnter a string to search for: ")
 		fmt.Scanf("%s", &query)
-		fmt.Printf("===== Words Containing '%s' =====\n\n", query)
-		fmt.Println(t.WordsContaining(query))
+		results = t.WordsContaining(query)
+		fmt.Printf("===== %d Words Containing '%s' =====\n\n", len(results), query)
+		fmt.Println(results)
 	}
 }

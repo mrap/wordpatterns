@@ -13,7 +13,13 @@ func BenchmarkBuildTrie(b *testing.B) {
 	}
 }
 
-func benchmarkQuery(query string, b *testing.B) {
+func BenchmarkBuildWordmap(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CreateWordmap(listFilename)
+	}
+}
+
+func trieQuery(query string, b *testing.B) {
 	trie := CreateTrie(largeListFilename)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -21,4 +27,13 @@ func benchmarkQuery(query string, b *testing.B) {
 	}
 }
 
-func BenchmarkQueryEr(b *testing.B) { benchmarkQuery("er", b) }
+func wordmapQuery(query string, b *testing.B) {
+	wm := CreateWordmap(largeListFilename)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		wm.WordsContaining(query)
+	}
+}
+
+func BenchmarkTrieQueryEr(b *testing.B)    { trieQuery("er", b) }
+func BenchmarkWordmapQueryEr(b *testing.B) { wordmapQuery("er", b) }
