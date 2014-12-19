@@ -29,18 +29,10 @@ func CreateWordmap(filename string) Wordmap {
 	return wm
 }
 
-func (wm Wordmap) AddWord(word string) {
+func (wm *Wordmap) AddWord(word string) {
 	substrs := stringutil.Substrs(word, 2)
-	var (
-		ok bool
-	)
 	for _, s := range substrs {
-		_, ok = wm[s]
-		if !ok {
-			wm[s] = []string{word}
-		} else {
-			wm[s] = append(wm[s], word)
-		}
+		(*wm)[s] = append((*wm)[s], word)
 	}
 }
 
