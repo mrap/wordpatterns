@@ -3,24 +3,35 @@ package main
 import "testing"
 
 const (
-	listFilename      = "test/google-10000-english.txt"
-	largeListFilename = "test/eowl-v1.1.2.txt"
+	list100         = "test/100_test_words.txt"
+	list1000        = "test/1000_test_words.txt"
+	list10000       = "test/10000_test_words.txt"
+	listGoogle10000 = "test/google-10000-english.txt"
 )
 
-func BenchmarkBuildTrie(b *testing.B) {
+func buildTrie(filename string, b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		CreateTrie(listFilename)
+		CreateTrie(filename)
 	}
 }
 
-func BenchmarkBuildWordmap(b *testing.B) {
+func buildWordmap(filename string, b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		CreateWordmap(listFilename)
+		CreateWordmap(filename)
 	}
 }
+
+func BenchmarkBuildTrie100(b *testing.B)            { buildTrie(list100, b) }
+func BenchmarkBuildTrie1000(b *testing.B)           { buildTrie(list1000, b) }
+func BenchmarkBuildTrie10000(b *testing.B)          { buildTrie(list10000, b) }
+func BenchmarkBuildTrieGoogle10000(b *testing.B)    { buildTrie(listGoogle10000, b) }
+func BenchmarkBuildWordmap100(b *testing.B)         { buildWordmap(list100, b) }
+func BenchmarkBuildWordmap1000(b *testing.B)        { buildWordmap(list1000, b) }
+func BenchmarkBuildWordmap10000(b *testing.B)       { buildWordmap(list10000, b) }
+func BenchmarkBuildWordmapGoogle10000(b *testing.B) { buildWordmap(listGoogle10000, b) }
 
 func trieQuery(query string, b *testing.B) {
-	trie := CreateTrie(largeListFilename)
+	trie := CreateTrie(list1000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		trie.WordsContaining(query)
@@ -28,7 +39,7 @@ func trieQuery(query string, b *testing.B) {
 }
 
 func wordmapQuery(query string, b *testing.B) {
-	wm := CreateWordmap(largeListFilename)
+	wm := CreateWordmap(list1000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		wm.WordsContaining(query)
