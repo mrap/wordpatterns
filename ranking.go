@@ -57,11 +57,11 @@ func qsPartition(wm *Wordmap, words *[]string, min int, max int) int {
 	r := max
 	for l < r {
 		// Move left until we find something less or equal to piv
-		for l < r && wm.compare((*words)[l], (*words)[p]) >= 0 {
+		for l < r && wm.Compare((*words)[l], (*words)[p]) >= 0 {
 			l++
 		}
 		// Move right until we find something greater than piv
-		for wm.compare((*words)[r], (*words)[p]) < 0 {
+		for wm.Compare((*words)[r], (*words)[p]) < 0 {
 			r--
 		}
 		if r < l {
@@ -77,19 +77,26 @@ func qsPartition(wm *Wordmap, words *[]string, min int, max int) int {
 // -1 Less than: less words or (if equal words) greater alphabetically
 // 0  Equal: same word count and same letter count
 // 1  More than: more words or (if equal words) less than alphabetically
-func (_wm Wordmap) compare(a, b string) int {
+func (_wm Wordmap) Compare(a, b string) int {
 	if len(_wm[a]) < len(_wm[b]) {
 		return -1
 	} else if len(_wm[a]) > len(_wm[b]) {
 		return 1
 	} else {
-		// Lastly compare alphabetically
-		if a > b {
+		// Compare by character length
+		if len(a) > len(b) {
 			return -1
-		} else if a < b {
+		} else if len(a) < len(b) {
 			return 1
 		} else {
-			return 0
+			// Lastly compare alphabetically
+			if a > b {
+				return -1
+			} else if a < b {
+				return 1
+			} else {
+				return 0
+			}
 		}
 	}
 }
