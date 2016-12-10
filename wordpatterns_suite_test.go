@@ -1,4 +1,4 @@
-package main
+package wordpatterns_test
 
 import (
 	. "github.com/onsi/ginkgo"

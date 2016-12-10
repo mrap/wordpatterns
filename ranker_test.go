@@ -1,6 +1,7 @@
-package main
+package wordpatterns_test
 
 import (
+	. "github.com/mrap/wordpatterns"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

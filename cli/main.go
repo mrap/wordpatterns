@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+
+	"github.com/mrap/wordpatterns"
 )
 
 var (
@@ -21,7 +23,7 @@ func main() {
 	}
 
 	fmt.Printf("Digesting words from %s...\n", *filename)
-	t := CreateWordmap(*filename)
+	t := wordpatterns.CreateWordmap(*filename)
 	fmt.Printf("Found and indexed %d sub-words (substrings).\n", len(t))
 
 	if *rank {

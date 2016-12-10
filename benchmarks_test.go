@@ -1,6 +1,10 @@
-package main
+package wordpatterns_test
 
-import "testing"
+import (
+	"testing"
+
+	. "github.com/mrap/wordpatterns"
+)
 
 const (
 	list100         = "test/100_test_words.txt"
