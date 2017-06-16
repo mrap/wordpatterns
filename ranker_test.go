@@ -31,15 +31,13 @@ var _ = Describe("Ranker", func() {
 	Describe("Ranking a wordmap", func() {
 		var (
 			_ranked []string
-			_wm     *Wordmap
 		)
 
 		BeforeEach(func() {
-			_wm = NewWordmap()
-			_wm.MinSubstrLen = 2
-			PopulateFromFile(_wm, testFilename)
+			wm := NewWordmap(&WordmapOptions{MinSubstrLen: 2})
+			PopulateFromFile(wm, testFilename)
 
-			_ranked = _wm.Ranked()
+			_ranked = wm.Ranked()
 		})
 
 		It("should rank", func() {

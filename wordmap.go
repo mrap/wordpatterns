@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/mrap/stringutil"
 )
@@ -11,16 +12,28 @@ import (
 type wordmap map[string][]string
 
 type Wordmap struct {
-	m            wordmap
-	MinSubstrLen int
-	wordSubstrs  map[string][]string
+	m           wordmap
+	wordSubstrs map[string][]string
+	opts        WordmapOptions
 }
 
-func NewWordmap() *Wordmap {
+type WordmapOptions struct {
+	IgnoreCase   bool
+	MinSubstrLen int
+}
+
+func NewWordmap(opts *WordmapOptions) *Wordmap {
+	if opts == nil {
+		opts = &WordmapOptions{}
+	}
+	if opts.MinSubstrLen < 1 {
+		opts.MinSubstrLen = 1
+	}
+
 	return &Wordmap{
-		m:            make(wordmap),
-		MinSubstrLen: 1,
-		wordSubstrs:  make(map[string][]string),
+		m:           make(wordmap),
+		wordSubstrs: make(map[string][]string),
+		opts:        *opts,
 	}
 }
 
@@ -30,7 +43,11 @@ func (wm *Wordmap) Has(word string) bool {
 }
 
 func (wm *Wordmap) AddWord(word string) {
-	substrs := stringutil.Substrs(word, wm.MinSubstrLen)
+	cased := word
+	if wm.opts.IgnoreCase {
+		cased = strings.ToLower(cased)
+	}
+	substrs := stringutil.Substrs(cased, wm.opts.MinSubstrLen)
 	for _, s := range substrs {
 		wm.m[s] = append(wm.m[s], word)
 	}
@@ -38,8 +55,7 @@ func (wm *Wordmap) AddWord(word string) {
 }
 
 func (wm *Wordmap) RemoveWord(word string) {
-	substrs := stringutil.Substrs(word, wm.MinSubstrLen)
-	for _, s := range substrs {
+	for _, s := range wm.wordSubstrs[word] {
 		if words, exists := wm.m[s]; exists {
 			wm.m[s] = removeStr(words, word)
 		}
@@ -48,7 +64,14 @@ func (wm *Wordmap) RemoveWord(word string) {
 }
 
 func (wm Wordmap) WordsContaining(substr string) []string {
+	if wm.opts.IgnoreCase {
+		substr = strings.ToLower(substr)
+	}
 	return wm.m[substr]
+}
+
+func (wm Wordmap) SubstringCount() int {
+	return len(wm.m)
 }
 
 func removeStr(arr []string, str string) []string {

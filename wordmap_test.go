@@ -11,7 +11,7 @@ var _ = Describe("Wordmap", func() {
 	var wm *Wordmap
 
 	BeforeEach(func() {
-		wm = NewWordmap()
+		wm = NewWordmap(nil)
 	})
 
 	Describe("Adding a word", func() {
@@ -46,6 +46,22 @@ var _ = Describe("Wordmap", func() {
 
 		It("should not have word substrings", func() {
 			Expect(wm.WordsContaining(word)).To(BeEmpty())
+		})
+	})
+
+	Describe("Case sensitivity", func() {
+		It("should be case sensitive by default", func() {
+			wm := NewWordmap(nil)
+			wm.AddWord("Ab")
+			Expect(wm.WordsContaining("A")).To(HaveLen(1))
+			Expect(wm.WordsContaining("a")).To(BeEmpty())
+		})
+
+		It("can be configured to be case insensitive", func() {
+			wm := NewWordmap(&WordmapOptions{IgnoreCase: true})
+			wm.AddWord("Ab")
+			Expect(wm.WordsContaining("A")).To(HaveLen(1))
+			Expect(wm.WordsContaining("a")).To(HaveLen(1))
 		})
 	})
 })

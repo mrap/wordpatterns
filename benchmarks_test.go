@@ -21,8 +21,7 @@ func buildTrie(filename string, b *testing.B) {
 
 func buildWordmap(filename string, b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		wm := NewWordmap()
-		wm.MinSubstrLen = 2
+		wm := NewWordmap(&WordmapOptions{MinSubstrLen: 2})
 		PopulateFromFile(wm, filename)
 	}
 }
@@ -45,8 +44,7 @@ func trieQuery(query string, b *testing.B) {
 }
 
 func wordmapQuery(query string, b *testing.B) {
-	wm := NewWordmap()
-	wm.MinSubstrLen = 2
+	wm := NewWordmap(&WordmapOptions{MinSubstrLen: 2})
 	PopulateFromFile(wm, list1000)
 
 	b.ResetTimer()
