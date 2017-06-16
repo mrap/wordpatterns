@@ -25,5 +25,27 @@ var _ = Describe("Wordmap", func() {
 		It("should have it before adding it", func() {
 			Expect(wm.Has(word)).To(BeTrue())
 		})
+
+		It("should have word substrings", func() {
+			Expect(wm.WordsContaining(word)).ToNot(BeEmpty())
+		})
+	})
+
+	Describe("Removing a word", func() {
+		const word = "abc"
+
+		BeforeEach(func() {
+			wm.AddWord(word)
+			Expect(wm.Has(word)).To(BeTrue())
+			wm.RemoveWord(word)
+		})
+
+		It("should not have it after removing it", func() {
+			Expect(wm.Has(word)).To(BeFalse())
+		})
+
+		It("should not have word substrings", func() {
+			Expect(wm.WordsContaining(word)).To(BeEmpty())
+		})
 	})
 })

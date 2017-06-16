@@ -54,6 +54,27 @@ func (wm *Wordmap) AddWord(word string) {
 	wm.wordSubstrs[word] = substrs
 }
 
+func (wm *Wordmap) RemoveWord(word string) {
+	substrs := stringutil.Substrs(word, 2)
+	for _, s := range substrs {
+		if words, exists := wm.m[s]; exists {
+			wm.m[s] = removeStr(words, word)
+		}
+	}
+	delete(wm.wordSubstrs, word)
+}
+
 func (wm Wordmap) WordsContaining(substr string) []string {
 	return wm.m[substr]
+}
+
+func removeStr(arr []string, str string) []string {
+	i := 0
+	for _, s := range arr {
+		if s != str {
+			arr[i] = s
+			i++
+		}
+	}
+	return arr[:i]
 }
