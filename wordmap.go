@@ -11,12 +11,14 @@ import (
 type wordmap map[string][]string
 
 type Wordmap struct {
-	m wordmap
+	m           wordmap
+	wordSubstrs map[string][]string
 }
 
 func NewWordmap() *Wordmap {
 	return &Wordmap{
-		m: make(wordmap),
+		m:           make(wordmap),
+		wordSubstrs: make(map[string][]string),
 	}
 }
 
@@ -39,12 +41,17 @@ func CreateWordmap(filename string) *Wordmap {
 	return wm
 }
 
+func (wm *Wordmap) Has(word string) bool {
+	_, exists := wm.wordSubstrs[word]
+	return exists
+}
 
 func (wm *Wordmap) AddWord(word string) {
 	substrs := stringutil.Substrs(word, 2)
 	for _, s := range substrs {
 		wm.m[s] = append(wm.m[s], word)
 	}
+	wm.wordSubstrs[word] = substrs
 }
 
 func (wm Wordmap) WordsContaining(substr string) []string {
