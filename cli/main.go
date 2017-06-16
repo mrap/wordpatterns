@@ -23,8 +23,9 @@ func main() {
 	}
 
 	fmt.Printf("Digesting words from %s...\n", *filename)
-	t := wordpatterns.CreateWordmap(*filename)
-	fmt.Printf("Found and indexed %d sub-words (substrings).\n", len(t))
+	t := wordpatterns.NewWordmap(nil)
+	wordpatterns.PopulateFromFile(t, *filename)
+	fmt.Printf("Found and indexed %d sub-words (substrings).\n", t.SubstringCount())
 
 	if *rank {
 		fmt.Println("Ranking words... This could take a while depending on the word list size.")
