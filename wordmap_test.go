@@ -22,7 +22,7 @@ var _ = Describe("Wordmap", func() {
 			wm.AddWord(word)
 		})
 
-		It("should have it before adding it", func() {
+		It("should have it after adding it", func() {
 			Expect(wm.Has(word)).To(BeTrue())
 		})
 
