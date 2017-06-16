@@ -35,7 +35,10 @@ var _ = Describe("Ranker", func() {
 		)
 
 		BeforeEach(func() {
-			_wm = CreateWordmap(testFilename)
+			_wm = NewWordmap()
+			_wm.MinSubstrLen = 2
+			PopulateFromFile(_wm, testFilename)
+
 			_ranked = _wm.Ranked()
 		})
 
