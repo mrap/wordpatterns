@@ -30,9 +30,9 @@ func rankByOccurences(_ranks Ranks, _n *Node, _wg *sync.WaitGroup) {
 }
 
 func (_wm Wordmap) Ranked() []string {
-	sorted := make([]string, len(_wm))
+	sorted := make([]string, len(_wm.m))
 	i := 0
-	for w, _ := range _wm {
+	for w, _ := range _wm.m {
 		sorted[i] = w
 		i++
 	}
@@ -78,9 +78,9 @@ func qsPartition(wm *Wordmap, words *[]string, min int, max int) int {
 // 0  Equal: same word count and same letter count
 // 1  More than: more words or (if equal words) less than alphabetically
 func (_wm Wordmap) Compare(a, b string) int {
-	if len(_wm[a]) < len(_wm[b]) {
+	if len(_wm.m[a]) < len(_wm.m[b]) {
 		return -1
-	} else if len(_wm[a]) > len(_wm[b]) {
+	} else if len(_wm.m[a]) > len(_wm.m[b]) {
 		return 1
 	} else {
 		// Compare by character length
@@ -119,6 +119,6 @@ func PrintWordmapArr(wm Wordmap, arr []string, limit int) {
 	var str string
 	for i := 0; i < limit; i++ {
 		str = arr[i]
-		fmt.Println(str, ":", len(wm[str]))
+		fmt.Println(str, ":", len(wm.WordsContaining(str)))
 	}
 }
