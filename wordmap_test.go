@@ -64,4 +64,15 @@ var _ = Describe("Wordmap", func() {
 			Expect(wm.WordsContaining("a")).To(HaveLen(1))
 		})
 	})
+
+	Describe("Ignoring chars", func() {
+		It("should be able to ignore specific chars", func() {
+			wm := NewWordmap(&WordmapOptions{IgnoreChars: []rune{' '}})
+			wm.AddWord("a b c")
+			Expect(wm.WordsContaining("a")).To(HaveLen(1))
+			Expect(wm.WordsContaining("ab")).To(HaveLen(1))
+			Expect(wm.WordsContaining("abc")).To(HaveLen(1))
+			Expect(wm.WordsContaining("a bc")).To(HaveLen(1))
+		})
+	})
 })

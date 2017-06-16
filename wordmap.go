@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/mrap/stringutil"
 )
@@ -15,10 +16,12 @@ type Wordmap struct {
 	m           wordmap
 	wordSubstrs map[string][]string
 	opts        WordmapOptions
+	ignoreChars map[rune]struct{}
 }
 
 type WordmapOptions struct {
 	IgnoreCase   bool
+	IgnoreChars  []rune
 	MinSubstrLen int
 }
 
@@ -30,10 +33,19 @@ func NewWordmap(opts *WordmapOptions) *Wordmap {
 		opts.MinSubstrLen = 1
 	}
 
+	ignoreChars := make(map[rune]struct{})
+	for _, c := range opts.IgnoreChars {
+		if opts.IgnoreCase {
+			c = unicode.ToLower(c)
+		}
+		ignoreChars[c] = struct{}{}
+	}
+
 	return &Wordmap{
 		m:           make(wordmap),
 		wordSubstrs: make(map[string][]string),
 		opts:        *opts,
+		ignoreChars: ignoreChars,
 	}
 }
 
@@ -43,11 +55,7 @@ func (wm *Wordmap) Has(word string) bool {
 }
 
 func (wm *Wordmap) AddWord(word string) {
-	cased := word
-	if wm.opts.IgnoreCase {
-		cased = strings.ToLower(cased)
-	}
-	substrs := stringutil.Substrs(cased, wm.opts.MinSubstrLen)
+	substrs := stringutil.Substrs(wm.filteredSubstr(word), wm.opts.MinSubstrLen)
 	for _, s := range substrs {
 		wm.m[s] = append(wm.m[s], word)
 	}
@@ -64,14 +72,29 @@ func (wm *Wordmap) RemoveWord(word string) {
 }
 
 func (wm Wordmap) WordsContaining(substr string) []string {
-	if wm.opts.IgnoreCase {
-		substr = strings.ToLower(substr)
-	}
-	return wm.m[substr]
+	return wm.m[wm.filteredSubstr(substr)]
 }
 
 func (wm Wordmap) SubstringCount() int {
 	return len(wm.m)
+}
+
+func (wm Wordmap) filteredSubstr(substr string) string {
+	if wm.opts.IgnoreCase {
+		substr = strings.ToLower(substr)
+	}
+	return wm.removeIgnoredChars(substr)
+}
+
+func (wm Wordmap) removeIgnoredChars(str string) string {
+	mapFunc := func(c rune) rune {
+		if _, ignore := wm.ignoreChars[c]; ignore {
+			return -1
+		}
+		return c
+	}
+
+	return strings.Map(mapFunc, str)
 }
 
 func removeStr(arr []string, str string) []string {
