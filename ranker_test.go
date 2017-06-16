@@ -31,7 +31,7 @@ var _ = Describe("Ranker", func() {
 	Describe("Ranking a wordmap", func() {
 		var (
 			_ranked []string
-			_wm     Wordmap
+			_wm     *Wordmap
 		)
 
 		BeforeEach(func() {
