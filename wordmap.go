@@ -8,6 +8,8 @@ import (
 	"github.com/mrap/stringutil"
 )
 
+type wordmap map[string][]string
+
 type Wordmap struct {
 	m wordmap
 }
@@ -37,7 +39,6 @@ func CreateWordmap(filename string) *Wordmap {
 	return wm
 }
 
-type wordmap map[string][]string
 
 func (wm *Wordmap) AddWord(word string) {
 	substrs := stringutil.Substrs(word, 2)
