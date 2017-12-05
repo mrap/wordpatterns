@@ -21,6 +21,7 @@ type Wordmap struct {
 
 type WordmapOptions struct {
 	IgnoreCase   bool
+	IgnoreOrder  bool
 	IgnoreChars  []rune
 	MinSubstrLen int
 }
@@ -82,6 +83,9 @@ func (wm Wordmap) SubstringCount() int {
 func (wm Wordmap) filteredSubstr(substr string) string {
 	if wm.opts.IgnoreCase {
 		substr = strings.ToLower(substr)
+	}
+	if wm.opts.IgnoreOrder {
+		substr = stringutil.SortString(substr)
 	}
 	return wm.removeIgnoredChars(substr)
 }

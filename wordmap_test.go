@@ -1,6 +1,7 @@
 package wordpatterns_test
 
 import (
+	"github.com/mrap/stringutil"
 	. "github.com/mrap/wordpatterns"
 
 	. "github.com/onsi/ginkgo"
@@ -9,15 +10,23 @@ import (
 
 var _ = Describe("Wordmap", func() {
 	var wm *Wordmap
+	var opts *WordmapOptions
 
 	BeforeEach(func() {
-		wm = NewWordmap(nil)
+		opts = &WordmapOptions{
+			MinSubstrLen: 1,
+		}
+	})
+
+	JustBeforeEach(func() {
+		wm = NewWordmap(opts)
 	})
 
 	Describe("Adding a word", func() {
 		const word = "abc"
+		expected := []string{word}
 
-		BeforeEach(func() {
+		JustBeforeEach(func() {
 			Expect(wm.Has(word)).To(BeFalse())
 			wm.AddWord(word)
 		})
@@ -27,7 +36,19 @@ var _ = Describe("Wordmap", func() {
 		})
 
 		It("should have word substrings", func() {
-			Expect(wm.WordsContaining(word)).ToNot(BeEmpty())
+			for _, substr := range stringutil.Substrs(word, 1) {
+				Expect(wm.WordsContaining(substr)).To(Equal(expected))
+			}
+		})
+
+		Context("when ignoring order", func() {
+			BeforeEach(func() {
+				opts.IgnoreOrder = true
+			})
+
+			It("should have word substrings", func() {
+				Expect(wm.WordsContaining(stringutil.ReverseString(word))).To(Equal(expected))
+			})
 		})
 	})
 
