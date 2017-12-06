@@ -84,10 +84,14 @@ func (wm Wordmap) filteredSubstr(substr string) string {
 	if wm.opts.IgnoreCase {
 		substr = strings.ToLower(substr)
 	}
+
+	substr = wm.removeIgnoredChars(substr)
+
 	if wm.opts.IgnoreOrder {
 		substr = stringutil.SortString(substr)
 	}
-	return wm.removeIgnoredChars(substr)
+
+	return substr
 }
 
 func (wm Wordmap) removeIgnoredChars(str string) string {
