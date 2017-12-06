@@ -2,7 +2,11 @@ package wordpatterns
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 	"sync"
+
+	"github.com/mrap/goutil/slices"
 )
 
 type Ranks map[string]int
@@ -36,75 +40,38 @@ func (_wm Wordmap) Ranked() []string {
 		sorted[i] = w
 		i++
 	}
-	quicksort(&_wm, &sorted, 0, len(sorted)-1)
-
+	sort.Slice(sorted, func(i, j int) bool {
+		return _wm.Compare(sorted[i], sorted[j]) < 0
+	})
+	slices.ReverseStrings(sorted)
 	return sorted
-}
-
-func quicksort(wm *Wordmap, words *[]string, min int, max int) {
-	if min >= max {
-		return
-	}
-	p := qsPartition(wm, words, min, max)
-	quicksort(wm, words, min, p-1)
-	quicksort(wm, words, p+1, max)
-}
-
-// Sort for greatest to least
-func qsPartition(wm *Wordmap, words *[]string, min int, max int) int {
-	p := min
-	l := min + 1
-	r := max
-	for l < r {
-		// Move left until we find something less or equal to piv
-		for l < r && wm.Compare((*words)[l], (*words)[p]) >= 0 {
-			l++
-		}
-		// Move right until we find something greater than piv
-		for wm.Compare((*words)[r], (*words)[p]) < 0 {
-			r--
-		}
-		if r < l {
-			break
-		}
-		swap(words, l, r)
-	}
-	swap(words, p, r)
-
-	return r
 }
 
 // -1 Less than: less words or (if equal words) greater alphabetically
 // 0  Equal: same word count and same letter count
 // 1  More than: more words or (if equal words) less than alphabetically
 func (_wm Wordmap) Compare(a, b string) int {
-	if len(_wm.m[a]) < len(_wm.m[b]) {
-		return -1
-	} else if len(_wm.m[a]) > len(_wm.m[b]) {
+	aMatches := _wm.WordsContaining(a)
+	bMatches := _wm.WordsContaining(b)
+	if len(aMatches) > len(bMatches) {
 		return 1
+	} else if len(aMatches) < len(bMatches) {
+		return -1
 	} else {
 		// Compare by character length
 		if len(a) > len(b) {
-			return -1
-		} else if len(a) < len(b) {
 			return 1
+		} else if len(a) < len(b) {
+			return -1
 		} else {
 			// Lastly compare alphabetically
-			if a > b {
-				return -1
-			} else if a < b {
-				return 1
-			} else {
-				return 0
-			}
+			return strings.Compare(b, a)
 		}
 	}
 }
 
-func swap(words *[]string, a, b int) {
-	tmp := (*words)[a]
-	(*words)[a] = (*words)[b]
-	(*words)[b] = tmp
+func swap(words []string, a, b int) {
+	words[a], words[b] = words[b], words[a]
 }
 
 func (_wm Wordmap) PrintRanks(limit int) {

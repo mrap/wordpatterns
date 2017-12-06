@@ -55,6 +55,10 @@ func (wm *Wordmap) Has(word string) bool {
 	return exists
 }
 
+func (wm *Wordmap) Substrs(word string) []string {
+	return wm.wordSubstrs[word]
+}
+
 func (wm *Wordmap) AddWord(word string) {
 	substrs := stringutil.Substrs(wm.filteredSubstr(word), wm.opts.MinSubstrLen)
 	for _, s := range substrs {
